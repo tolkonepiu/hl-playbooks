@@ -33,7 +33,7 @@ jobs:
         with:
           reporter: github-pr-review
           filter_mode: nofilter
-          fail_on_error: true
+          fail_level: error
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
   shfmt:
@@ -47,7 +47,7 @@ jobs:
         with:
           reporter: github-pr-review
           filter_mode: nofilter
-          fail_on_error: true
+          fail_level: error
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
   markdownlint:
@@ -61,7 +61,7 @@ jobs:
         with:
           reporter: github-pr-review
           filter_mode: nofilter
-          fail_on_error: true
+          fail_level: error
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
   ansible-lint:
@@ -71,11 +71,4 @@ jobs:
       - name: ⤵️ Check out code
         uses: actions/checkout@v4
       - name: 🚀 Run ansible-lint
-        uses: reviewdog/action-ansiblelint@v1
-        with:
-          # renovate: datasource=pypi depName=ansible-lint
-          ansiblelint_version: 24.10.0
-          reporter: github-pr-review
-          filter_mode: nofilter
-          fail_on_error: true
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+        uses: ansible/ansible-lint@v24

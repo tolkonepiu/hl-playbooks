@@ -63,7 +63,7 @@ repository:
 1. **`manage_apt_sources`**:
 
    - Manages `/etc/apt/sources.list`.
-   - Configures APT mirrors and sources for different distributions (Ununtu,
+   - Configures APT mirrors and sources for different distributions (Ubuntu,
      Armbian).
 
 1. **`unattended_upgrades`**:

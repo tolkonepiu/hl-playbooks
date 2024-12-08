@@ -10,8 +10,8 @@
 
 - name: Clone zdotdir repository
   ansible.builtin.git:
-    repo: "{{ zdotdir_repo }}"
-    dest: "{{ zdotdir_path }}"
+    repo: "{{ setup_zsh_zdotdir_repo }}"
+    dest: "{{ setup_zsh_zdotdir_path }}"
     depth: 1
     update: true
   become: false
@@ -40,7 +40,7 @@
 - name: Deploy zdotdir update script
   ansible.builtin.template:
     src: update_zdotdir.sh.j2
-    dest: "{{ zdotdir_path }}/update_zdotdir.sh"
+    dest: "{{ setup_zsh_zdotdir_path }}/update_zdotdir.sh"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: "0755"
@@ -50,8 +50,8 @@
   ansible.builtin.cron:
     name: "Auto-update zdotdir repository"
     user: "{{ ansible_user }}"
-    minute: "{{ zdotdir_update_cron_minute }}"
-    job: "bash {{ zdotdir_path }}/update_zdotdir.sh > /dev/null 2>&1"
+    minute: "{{ setup_zsh_zdotdir_update_cron_minute }}"
+    job: "bash {{ setup_zsh_zdotdir_path }}/update_zdotdir.sh > /dev/null 2>&1"
   become: false
   notify:
     - Restart cron service

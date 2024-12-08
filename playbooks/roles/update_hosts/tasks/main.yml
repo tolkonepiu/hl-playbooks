@@ -2,6 +2,7 @@
   ansible.builtin.command:
     cmd: hostname
   register: current_hostname
+  changed_when: false
 
 - name: Set the new hostname
   ansible.builtin.hostname:
@@ -15,6 +16,7 @@
     path: /etc/hostname
     line: "{{ inventory_hostname }}"
     create: true
+    mode: "0644"
   when: current_hostname.stdout != inventory_hostname
 
 - name: Update /etc/hosts

@@ -1,19 +1,20 @@
 - name: Ensure git is installed
   ansible.builtin.package:
     name: git
-    state: latest
+    state: present
 
 - name: Ensure zsh is installed
   ansible.builtin.package:
     name: zsh
-    state: latest
+    state: present
 
 - name: Clone zdotdir repository
   ansible.builtin.git:
     repo: "{{ setup_zsh_zdotdir_repo }}"
     dest: "{{ setup_zsh_zdotdir_path }}"
     depth: 1
-    update: true
+    version: main
+    update: false
   become: false
 
 - name: Create or update .zshenv from template with backup
@@ -27,9 +28,10 @@
   become: false
 
 - name: Get the path to zsh
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: which zsh
   register: zsh_path
+  changed_when: false
 
 - name: Set zsh as the default shell for the user
   ansible.builtin.user:
@@ -48,10 +50,10 @@
 
 - name: Configure zdotdir auto-update cron job
   ansible.builtin.cron:
-    name: "Auto-update zdotdir repository"
+    name: Auto-update zdotdir repository
     user: "{{ ansible_user }}"
     minute: "{{ setup_zsh_zdotdir_update_cron_minute }}"
-    job: "bash {{ setup_zsh_zdotdir_path }}/update_zdotdir.sh > /dev/null 2>&1"
+    job: bash {{ setup_zsh_zdotdir_path }}/update_zdotdir.sh > /dev/null 2>&1
   become: false
   notify:
     - Restart cron service

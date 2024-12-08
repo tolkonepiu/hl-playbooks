@@ -13,7 +13,7 @@
     repo: "{{ zdotdir_repo }}"
     dest: "{{ zdotdir_path }}"
     depth: 1
-    update: yes
+    update: true
   become: false
 
 - name: Create or update .zshenv from template with backup

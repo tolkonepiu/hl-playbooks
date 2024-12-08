@@ -1,0 +1,40 @@
+- name: Manage APT sources
+  when: ansible_facts.get('distribution') == "Ubuntu"
+  notify: Update APT cache
+  block:
+    - name: Replace /etc/apt/sources.list with the template
+      ansible.builtin.template:
+        src: templates/sources.list.j2
+        dest: /etc/apt/sources.list
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Remove deprecated sources
+      ansible.builtin.file:
+        path: /etc/apt/sources.list.d/ubuntu.sources
+        state: absent
+
+    - name: Replace /etc/apt/sources.list.d/tailscale.list
+      ansible.builtin.template:
+        src: templates/tailscale.list.j2
+        dest: /etc/apt/sources.list.d/tailscale.list
+        owner: root
+        group: root
+        mode: "0644"
+    - name: Manage APT sources
+      when:
+        - armbian is defined
+        - armbian.get('vendor') == "Armbian"
+      block:
+        - name: Replace /etc/apt/sources.list.d/armbian.list for Armbian hosts
+          ansible.builtin.template:
+            src: templates/armbian.list.j2
+            dest: /etc/apt/sources.list.d/armbian.list
+            owner: root
+            group: root
+            mode: "0644"
+        - name: Remove unused Armbian sources
+          ansible.builtin.file:
+            path: /etc/apt/sources.list.d/armbian.list.disabled
+            state: absent

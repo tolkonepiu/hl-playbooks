@@ -1,0 +1,9 @@
+- name: Configure all hosts
+  hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - update_hosts
+    - manage_apt_sources
+    - unattended_upgrades
+    - setup_zsh

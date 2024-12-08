@@ -1,0 +1,12 @@
+- name: Restart hostname-dependent services
+  block:
+    - name: Restart network service
+      ansible.builtin.service:
+        name: network
+        state: restarted
+      ignore_errors: true
+
+    - name: Wait for the host to become available
+      ansible.builtin.wait_for_connection:
+        timeout: 300
+  become: true

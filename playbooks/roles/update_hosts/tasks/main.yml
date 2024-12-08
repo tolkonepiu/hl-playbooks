@@ -1,0 +1,27 @@
+- name: Get the current hostname
+  ansible.builtin.command:
+    cmd: hostname
+  register: current_hostname
+
+- name: Set the new hostname
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+  when: current_hostname.stdout != inventory_hostname
+  notify:
+    - Restart hostname-dependent services
+
+- name: Update /etc/hostname
+  ansible.builtin.lineinfile:
+    path: /etc/hostname
+    line: "{{ inventory_hostname }}"
+    create: true
+  when: current_hostname.stdout != inventory_hostname
+
+- name: Update /etc/hosts
+  ansible.builtin.template:
+    src: templates/hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: "0644"
+  become: true

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Navigate to the zdotdir repository
+cd "{{ zdotdir_path }}" || exit 1
+
+# Update the zdotdir repository
+echo "Updating zdotdir repository..."
+git pull --rebase
+
+# Check if the .antidote directory exists
+if [ -d "{{ zdotdir_path }}/.antidote" ]; then
+    echo "Updating .antidote repository..."
+    cd "{{ zdotdir_path }}/.antidote" || exit 1
+    git pull --rebase
+else
+    echo ".antidote directory not found, skipping..."
+fi

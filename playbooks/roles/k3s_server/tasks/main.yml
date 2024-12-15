@@ -37,7 +37,7 @@
   block:
     - name: Copy K3s service file
       ansible.builtin.template:
-        src: "templates/k3s-cluster-init.service.j2"
+        src: templates/k3s-cluster-init.service.j2
         dest: "{{ k3s_server_systemd_dir }}/k3s.service"
         owner: root
         group: root
@@ -50,7 +50,7 @@
       ansible.builtin.lineinfile:
         state: absent
         path: "{{ k3s_server_systemd_dir }}/k3s.service.env"
-        regexp: "^K3S_TOKEN=\\s*(?!{{ token | default('') }}\\s*$)"
+        regexp: ^K3S_TOKEN=\\s*(?!{{ token | default('') }}\\s*$)
 
     - name: Restart K3s service
       when:
@@ -100,67 +100,67 @@
   when:
     - inventory_hostname != groups['server'][0]
   block:
-      - name: Get the api endpoint from the first server
-        ansible.builtin.set_fact:
-          api_endpoint: "{{ hostvars[groups['server'][0]].api_endpoint }}"
-      - name: Get the token from the first server
-        ansible.builtin.set_fact:
-          token: "{{ hostvars[groups['server'][0]].token }}"
+    - name: Get the api endpoint from the first server
+      ansible.builtin.set_fact:
+        api_endpoint: "{{ hostvars[groups['server'][0]].api_endpoint }}"
+    - name: Get the token from the first server
+      ansible.builtin.set_fact:
+        token: "{{ hostvars[groups['server'][0]].token }}"
 
-      - name:
-          Delete any existing token from the environment if different from the new
-          one
-        ansible.builtin.lineinfile:
-          state: absent
-          path: "{{ k3s_server_systemd_dir }}/k3s.service.env"
-          regexp: "^K3S_TOKEN=\\s*(?!{{ token }}\\s*$)"
+    - name:
+        Delete any existing token from the environment if different from the new
+        one
+      ansible.builtin.lineinfile:
+        state: absent
+        path: "{{ k3s_server_systemd_dir }}/k3s.service.env"
+        regexp: ^K3S_TOKEN=\\s*(?!{{ token }}\\s*$)
 
-      - name: Add the token for joining the cluster to the environment
-        no_log: true # avoid logging the server token
-        ansible.builtin.lineinfile:
-          path: "{{ k3s_server_systemd_dir }}/k3s.service.env"
-          line: "{{ item }}"
-        with_items:
-          - "K3S_TOKEN={{ token }}"
+    - name: Add the token for joining the cluster to the environment
+      no_log: true # avoid logging the server token
+      ansible.builtin.lineinfile:
+        path: "{{ k3s_server_systemd_dir }}/k3s.service.env"
+        line: "{{ item }}"
+      with_items:
+        - K3S_TOKEN={{ token }}
 
-      - name: Copy K3s service file
-        ansible.builtin.template:
-          src: "k3s-ha.service.j2"
-          dest: "{{ k3s_server_systemd_dir }}/k3s.service"
-          owner: root
-          group: root
-          mode: "0644"
-        register: service_file
+    - name: Copy K3s service file
+      ansible.builtin.template:
+        src: k3s-ha.service.j2
+        dest: "{{ k3s_server_systemd_dir }}/k3s.service"
+        owner: root
+        group: root
+        mode: "0644"
+      register: service_file
 
-      - name: Restart K3s service
-        when:
-          - ansible_facts.services['k3s.service'] is defined
-          - ansible_facts.services['k3s.service'].state == 'running'
-          - service_file.changed
-        ansible.builtin.systemd:
-          name: k3s
-          daemon_reload: true
-          state: restarted
+    - name: Restart K3s service
+      when:
+        - ansible_facts.services['k3s.service'] is defined
+        - ansible_facts.services['k3s.service'].state == 'running'
+        - service_file.changed
+      ansible.builtin.systemd:
+        name: k3s
+        daemon_reload: true
+        state: restarted
 
-      - name: Enable and check K3s service
-        when:
-          ansible_facts.services['k3s.service'] is not defined or
-          ansible_facts.services['k3s.service'].state != 'running'
-        ansible.builtin.systemd:
-          name: k3s
-          daemon_reload: true
-          state: started
-          enabled: true
+    - name: Enable and check K3s service
+      when:
+        ansible_facts.services['k3s.service'] is not defined or
+        ansible_facts.services['k3s.service'].state != 'running'
+      ansible.builtin.systemd:
+        name: k3s
+        daemon_reload: true
+        state: started
+        enabled: true
 
-      - name: Verify that all server nodes joined
-        ansible.builtin.command:
-          cmd: >
-            k3s kubectl get nodes -l "node-role.kubernetes.io/control-plane=true"
-            -o=jsonpath="{.items[*].metadata.name}"
-        register: nodes
-        until:
-          nodes.rc == 0 and (nodes.stdout.split() | length) ==
-          (groups['server'] | length)
-        retries: 20
-        delay: 10
-        changed_when: false
+    - name: Verify that all server nodes joined
+      ansible.builtin.command:
+        cmd: >
+          k3s kubectl get nodes -l "node-role.kubernetes.io/control-plane=true"
+          -o=jsonpath="{.items[*].metadata.name}"
+      register: nodes
+      until:
+        nodes.rc == 0 and (nodes.stdout.split() | length) == (groups['server'] |
+        length)
+      retries: 20
+      delay: 10
+      changed_when: false

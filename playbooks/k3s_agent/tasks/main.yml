@@ -30,7 +30,7 @@
       environment:
         INSTALL_K3S_SKIP_START: "true"
         INSTALL_K3S_VERSION: "{{ k3s_version }}"
-        INSTALL_K3S_EXEC: "agent"
+        INSTALL_K3S_EXEC: agent
       changed_when: true
 
 - name: Get the api endpoint from the first server
@@ -45,7 +45,7 @@
   ansible.builtin.lineinfile:
     state: absent
     path: "{{ k3s_agent_systemd_dir }}/k3s-agent.service.env"
-    regexp: "^K3S_TOKEN=\\s*(?!{{ token }}\\s*$)"
+    regexp: ^K3S_TOKEN=\\s*(?!{{ token }}\\s*$)
 
 - name: Add the token for joining the cluster to the environment
   no_log: true # avoid logging the server token
@@ -53,16 +53,16 @@
     path: "{{ k3s_agent_systemd_dir }}/k3s-agent.service.env"
     line: "{{ item }}"
   with_items:
-    - "K3S_TOKEN={{ token }}"
+    - K3S_TOKEN={{ token }}
 
 - name: Copy K3s service file
   register: k3s_agent_service
   ansible.builtin.template:
-    src: "k3s-agent.service.j2"
+    src: k3s-agent.service.j2
     dest: "{{ k3s_agent_systemd_dir }}/k3s-agent.service"
     owner: root
     group: root
-    mode: "u=rw,g=r,o=r"
+    mode: u=rw,g=r,o=r
 
 - name: Enable and check K3s service
   ansible.builtin.systemd:

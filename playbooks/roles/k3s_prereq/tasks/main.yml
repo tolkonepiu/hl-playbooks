@@ -37,7 +37,7 @@
 
     - name: Fail if cgroups are not properly configured
       ansible.builtin.fail:
-        msg: "cgroups are not enabled or misconfigured."
+        msg: cgroups are not enabled or misconfigured.
       when: >
         not ('cpuset' in cgroups_output.stdout and
              'memory' in cgroups_output.stdout and

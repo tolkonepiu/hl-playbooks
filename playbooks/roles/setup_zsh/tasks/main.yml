@@ -52,7 +52,7 @@
   ansible.builtin.cron:
     name: Auto-update zdotdir repository
     user: "{{ ansible_user }}"
-    minute: "{{ setup_zsh_zdotdir_update_cron_minute }}"
+    special_time: "{{ setup_zsh_zdotdir_update_cron_special_time }}"
     job: bash {{ setup_zsh_zdotdir_path }}/update_zdotdir.sh > /dev/null 2>&1
   become: false
   notify:

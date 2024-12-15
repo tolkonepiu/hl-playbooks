@@ -1,16 +1,10 @@
 servers:
   hosts:
     olympus-phobos:
-      # ansible_host: 127.0.0.1
     olympus-hecate:
-      # ansible_host: 127.0.0.1
     olympus-zephyr:
-      # ansible_host: 127.0.0.1
     olympus-uranus:
-      # ansible_host: 127.0.0.1
     atlas-ru:
-      # ansible_host: 127.0.0.1
     atlas-nl:
-      # ansible_host: 127.0.0.1
   vars:
     ansible_user: root

@@ -96,6 +96,16 @@
             token:
               "{{ node_token.content | b64decode | regex_replace('\n', '') }}"
 
+    - name: Store Master node's Tailscale IP address
+      block:
+        - name: Get Tailscale IP from the node
+          ansible.builtin.command: tailscale ip
+          register: tailscale_ip_output
+          changed_when: tailscale_ip_output
+        - name: Set Tailscale IP as fact
+          ansible.builtin.set_fact:
+            tailscale_ip: "{{ tailscale_ip_output.stdout_lines[0] }}"
+
 - name: Start other servers and verify status
   when:
     - inventory_hostname != groups['server'][0]

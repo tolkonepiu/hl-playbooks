@@ -3,15 +3,15 @@ cluster:
     server:
       hosts:
         olympus-hecate:
-          # ansible_host: 127.0.0.1
         olympus-phobos:
-          # ansible_host: 127.0.0.1
         olympus-zephyr:
-          # ansible_host: 127.0.0.1
     agent:
       hosts:
         olympus-uranus:
-          # ansible_host: 127.0.0.1
+        atlas-ru:
+          use_tailscale_ip: true
+        atlas-nl:
+          use_tailscale_ip: true
   vars:
     ansible_user: root
     k3s_version: v1.31.3+k3s1

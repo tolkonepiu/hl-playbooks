@@ -39,21 +39,12 @@
     shell: "{{ zsh_path.stdout }}"
   become: true
 
-- name: Deploy zdotdir update script
-  ansible.builtin.template:
-    src: update_zdotdir.sh.j2
-    dest: "{{ setup_zsh_zdotdir_path }}/update_zdotdir.sh"
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: "0755"
-  become: false
-
 - name: Configure zdotdir auto-update cron job
   ansible.builtin.cron:
     name: Auto-update zdotdir repository
     user: "{{ ansible_user }}"
     special_time: "{{ setup_zsh_zdotdir_update_cron_special_time }}"
-    job: bash {{ setup_zsh_zdotdir_path }}/update_zdotdir.sh > /dev/null 2>&1
+    job: zsh -ic 'zdotdir update' > /dev/null 2>&1
   become: false
   notify:
     - Restart cron service

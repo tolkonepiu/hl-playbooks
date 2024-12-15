@@ -1,0 +1,4 @@
+k3s_agent_location: "/var/lib/rancher/k3s"
+k3s_agent_systemd_dir: "/etc/systemd/system"
+k3s_agent_extra_args: ""
+k3s_agent_api_port: 6443

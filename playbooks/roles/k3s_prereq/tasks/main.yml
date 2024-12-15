@@ -1,0 +1,45 @@
+- name: Fail if less than 2 nodes in the server group
+  delegate_to: 127.0.0.1
+  ansible.builtin.fail:
+    msg: >
+      k3s requires at least 2 nodes in the "server" group to support HA
+      mode. Detected only {{ groups['server'] | length }} node(s) in the "server" group.
+  when: groups['server'] | length < 2
+
+- name: Enable IPv4 forwarding
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    state: present
+    reload: true
+
+- name: Enable IPv6 forwarding
+  ansible.posix.sysctl:
+    name: net.ipv6.conf.all.forwarding
+    value: "1"
+    state: present
+    reload: true
+  when: ansible_all_ipv6_addresses
+
+- name: Check if cgroups are enabled
+  block:
+    - name: Check /proc/cgroups for enabled controllers
+      ansible.builtin.command:
+        cmd: cat /proc/cgroups
+      register: cgroups_output
+      changed_when: false
+
+    - name: Check /proc/cmdline for cgroup kernel parameters
+      ansible.builtin.command:
+        cmd: cat /proc/cmdline
+      register: cmdline_output
+      changed_when: false
+
+    - name: Fail if cgroups are not properly configured
+      ansible.builtin.fail:
+        msg: "cgroups are not enabled or misconfigured."
+      when: >
+        not ('cpuset' in cgroups_output.stdout and
+             'memory' in cgroups_output.stdout and
+             'cgroup_enable=cpuset' in cmdline_output.stdout and
+             'cgroup_enable=memory' in cmdline_output.stdout)

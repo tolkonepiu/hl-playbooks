@@ -1,0 +1,17 @@
+- name: Cluster prepeq
+  hosts: cluster
+  become: true
+  roles:
+    - k3s_prereq
+
+- name: Setup K3S server
+  hosts: server
+  become: true
+  roles:
+    - k3s_server
+
+- name: Setup K3S agent
+  hosts: agent
+  become: true
+  roles:
+    - k3s_agent

@@ -1,5 +1,6 @@
-- name: Configure all hosts
-  hosts: all
+- name: Configure servers
+  hosts:
+    - servers
   become: true
   gather_facts: true
   roles:

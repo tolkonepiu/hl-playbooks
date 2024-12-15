@@ -1,0 +1,10 @@
+servers:
+  hosts:
+    olympus-phobos:
+    olympus-hecate:
+    olympus-zephyr:
+    olympus-uranus:
+    atlas-ru:
+    atlas-nl:
+  vars:
+    ansible_user: root

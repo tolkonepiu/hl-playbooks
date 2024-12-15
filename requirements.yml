@@ -1,2 +1,3 @@
 collections:
-  - name: samdoran.armbian
+  - ansible.posix
+  - samdoran.armbian

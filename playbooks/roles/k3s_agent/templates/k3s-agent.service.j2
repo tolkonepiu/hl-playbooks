@@ -26,4 +26,4 @@ RestartSec=5s
 ExecStartPre=/bin/sh -xc '! /usr/bin/systemctl is-enabled --quiet nm-cloud-setup.service'
 ExecStartPre=-/sbin/modprobe br_netfilter
 ExecStartPre=-/sbin/modprobe overlay
-ExecStart=/usr/local/bin/k3s agent --data-dir {{ k3s_agent_location }} --server https://{{ api_endpoint }}:{{ k3s_agent_api_port }} {% if use_tailscale_ip | default(false) %}--node-ip={{ tailscale_ip }} {% endif %}{{ k3s_agent_extra_args }}
+ExecStart=/usr/local/bin/k3s agent --data-dir {{ k3s_agent_location }} --server https://{{ api_endpoint }}:{{ k3s_agent_api_port }} {% if use_tailscale_ip | default(false) %}--node-ip={{ tailscale_ip }} --node-external-ip={{ ansible_default_ipv4.address }} {% endif %}{{ k3s_agent_extra_args }}

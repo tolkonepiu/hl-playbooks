@@ -1,4 +1,4 @@
-- name: Cluster prepeq
+- name: Cluster prereq
   hosts: cluster
   become: true
   roles:

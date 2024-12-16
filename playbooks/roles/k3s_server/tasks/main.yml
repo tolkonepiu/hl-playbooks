@@ -101,7 +101,7 @@
         - name: Get Tailscale IP from the node
           ansible.builtin.command: tailscale ip
           register: tailscale_ip_output
-          changed_when: tailscale_ip_output
+          changed_when: false
         - name: Set Tailscale IP as fact
           ansible.builtin.set_fact:
             tailscale_ip: "{{ tailscale_ip_output.stdout_lines[0] }}"

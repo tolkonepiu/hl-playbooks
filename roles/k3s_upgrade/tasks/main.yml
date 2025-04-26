@@ -16,7 +16,7 @@
     - name: Find K3s service files
       ansible.builtin.find:
         paths: "{{ k3s_upgrade_systemd_dir }}"
-        patterns: "k3s*.service"
+        patterns: k3s*.service
       register: k3s_service_files
 
     - name: Save current K3s service
@@ -52,14 +52,14 @@
       loop: "{{ k3s_service_files.files }}"
 
     - name: Restart K3s service [server]
-      when: "k3s_upgrade_server_group in group_names"
+      when: k3s_upgrade_server_group in group_names
       ansible.builtin.systemd:
         state: restarted
         daemon_reload: true
         name: k3s
 
     - name: Restart K3s service [agent]
-      when: "k3s_upgrade_agent_group in group_names"
+      when: k3s_upgrade_agent_group in group_names
       ansible.builtin.systemd:
         state: restarted
         daemon_reload: true

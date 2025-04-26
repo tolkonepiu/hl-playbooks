@@ -1,2 +1,2 @@
 # Tailscale packages for ubuntu {{ manage_apt_sources_ubuntu_release }}
-deb [signed-by=/usr/share/keyrings/tailscale-archive-keyring.gpg] https://pkgs.tailscale.com/stable/ubuntu {{ manage_apt_sources_ubuntu_release }} main
+deb [signed-by=/usr/share/keyrings/tailscale-archive-keyring.gpg] {{ manage_apt_sources_tailscale_apt_url }} {{ manage_apt_sources_ubuntu_release }} main

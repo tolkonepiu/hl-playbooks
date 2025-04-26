@@ -1,2 +1,3 @@
-APT::Periodic::Update-Package-Lists "1";
-APT::Periodic::Unattended-Upgrade "1";
+{% for key, value in unattended_upgrades_apt_periodic_settings.items() %}
+APT::Periodic::{{ key }} "{{ value }}";
+{% endfor %}

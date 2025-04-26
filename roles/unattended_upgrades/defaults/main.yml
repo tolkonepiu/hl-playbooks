@@ -1,0 +1,30 @@
+unattended_upgrades_apt_periodic_settings:
+  Update-Package-Lists: "1"
+  Unattended-Upgrade: "1"
+  AutocleanInterval: "7"
+
+unattended_upgrades_allowed_origins:
+  - ${distro_id}:${distro_codename}
+  - ${distro_id}:${distro_codename}-security
+  - ${distro_id}ESMApps:${distro_codename}-apps-security
+  - ${distro_id}ESM:${distro_codename}-infra-security
+  - ${distro_id}:${distro_codename}-updates
+  # - ${distro_id}:${distro_codename}-proposed
+  # - ${distro_id}:${distro_codename}-backports
+
+unattended_upgrades_package_blacklist: []
+unattended_upgrades_dev_release: auto
+unattended_upgrades_auto_fix_interrupted_dpkg: "true"
+unattended_upgrades_minimal_steps: "false"
+unattended_upgrades_install_on_shutdown: "false"
+unattended_upgrades_remove_unused_kernel_packages: "true"
+unattended_upgrades_remove_new_unused_dependencies: "true"
+unattended_upgrades_remove_unused_dependencies: "true"
+unattended_upgrades_automatic_reboot: "false"
+unattended_upgrades_automatic_reboot_with_users: "false"
+unattended_upgrades_syslog_enable: "false"
+unattended_upgrades_syslog_facility: daemon
+unattended_upgrades_verbose: "false"
+unattended_upgrades_debug: "false"
+unattended_upgrades_allow_downgrade: "false"
+unattended_upgrades_allow_apt_mark_fallback: "true"

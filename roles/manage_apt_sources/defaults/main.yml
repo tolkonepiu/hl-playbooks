@@ -1,1 +1,3 @@
 manage_apt_sources_ubuntu_release: noble
+manage_apt_sources_armbian_apt_url: http://apt.armbian.com
+manage_apt_sources_tailscale_apt_url: https://pkgs.tailscale.com/stable/ubuntu

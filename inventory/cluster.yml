@@ -10,8 +10,8 @@ cluster:
         olympus-uranus:
         atlas-ru:
           use_tailscale_ip: true
-        atlas-nl:
-          use_tailscale_ip: true
+        # atlas-nl:
+        #   use_tailscale_ip: true
   vars:
     ansible_user: root
-    k3s_version: v1.31.3+k3s1
+    k3s_version: v1.32.3+k3s1

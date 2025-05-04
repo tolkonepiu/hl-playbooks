@@ -2,3 +2,6 @@ k3s_server_location: /var/lib/rancher/k3s
 k3s_server_systemd_dir: /etc/systemd/system
 k3s_server_extra_args: ""
 k3s_server_api_port: 6443
+k3s_server_export_kubeconfig: true
+k3s_server_local_kubeconfig_path: ~/.kube/config
+k3s_server_kubeconfig_path: /etc/rancher/k3s/k3s.yaml

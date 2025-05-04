@@ -80,6 +80,53 @@
       ansible.builtin.set_fact:
         api_endpoint: "{{ ansible_default_ipv4.address }}"
 
+- name: Export kubeconfig to control machine
+  when:
+    - inventory_hostname == groups['server'][0]
+    - k3s_server_export_kubeconfig | bool
+  block:
+    - name: Wait for kubeconfig file to be created
+      ansible.builtin.wait_for:
+        path: "{{ k3s_server_kubeconfig_path }}"
+        state: present
+        timeout: 60
+
+    - name: Read kubeconfig from server
+      ansible.builtin.slurp:
+        src: "{{ k3s_server_kubeconfig_path }}"
+      register: kubeconfig_content_b64
+
+    - name: Set kubeconfig content as fact
+      ansible.builtin.set_fact:
+        kubeconfig_content: "{{ kubeconfig_content_b64.content | b64decode }}"
+
+    - name: Ensure .kube directory exists on control machine
+      ansible.builtin.file:
+        path: "{{ k3s_server_local_kubeconfig_path | dirname }}"
+        state: directory
+        mode: "0700"
+      delegate_to: localhost
+      become: false
+
+    - name: Create backup of existing kubeconfig if it exists
+      ansible.builtin.copy:
+        src: "{{ k3s_server_local_kubeconfig_path }}"
+        dest:
+          "{{ k3s_server_local_kubeconfig_path }}.backup.{{
+          ansible_date_time.iso8601_basic_short }}"
+        mode: "0600"
+      delegate_to: localhost
+      become: false
+      failed_when: false
+
+    - name: Write kubeconfig to control machine
+      ansible.builtin.template:
+        src: templates/kubeconfig.j2
+        dest: "{{ k3s_server_local_kubeconfig_path }}"
+        mode: "0600"
+      delegate_to: localhost
+      become: false
+
     - name: Get the token
       block:
         - name: Wait for token

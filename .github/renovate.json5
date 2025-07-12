@@ -7,7 +7,8 @@
   },
   customManagers: [
     {
-      fileMatch: [".+\\.ya?ml$"],
+      customType: "regex",
+      managerFilePatterns: ["/.+\\.ya?ml$/"],
       matchStrings: [
         "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\n.*?: (?<currentValue>.*)",
       ],
